@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+ \documentclass[11pt]{article}
 \usepackage{enumitem}
 \usepackage{latexsym}
 \usepackage{amsfonts}
@@ -25,30 +25,30 @@
 \begin{document}
 \hw{1: Regular Languages}{1/13/2023}{}{Due:1/27/2023}
 
-You should submit a typeset or \emph{neatly} written pdf on Canvas.  The grading TA should not have to struggle to read what you've written; if your handwriting is hard to decipher, you will be asked to typeset your future assignments. Five bonus points if you use \LaTeX, and our template. You may collaborate with other students, but any written work should be your own.
+You should submit a typeset or \emph{neatly} written pdf on Canvas.  The grading TA should not have to struggle to read what you've written; if your handwriting is hard to decipher, you will be asked to typeset your future assignments. Five bonus points if you use \LaTeX, and our template. You may collaborate with other students, but any written work should be your own. 
 
 
 \begin{enumerate}
 
-    \item
-
-    One perspective of this class is that we are developing a theory of representation, or definability. For finite sets, this is easy, but it becomes more challenging for infinite languages.
+    \item 
+    
+    One perspective of this class is that we are developing a theory of representation, or definability. For finite sets, this is easy, but it becomes more challenging for infinite languages. 
 
     \begin{enumerate}
         \item Prove every finite language is regular.
         \item Suppose we unrestricted our definition of DFA. We define a DIA to be exactly like a DFA except $|Q|=\infty$, and $\delta, F$ are adjusted appropriately. Prove that every language is decidable by a DIA.
     \end{enumerate}
-
-    \item Give an NFA, DFA, and regular expression for the following languages. Your NFA must be different than your DFA. Your solution doesn't have to be minimal, but it may assist the TA in grading.
+    
+    \item Give an NFA, DFA, and regular expression for the following languages. Your NFA must be different than your DFA. Your solution doesn't have to be minimal, but it may assist the TA in grading. 
     \begin{itemize}
         \item $\{w \in \Sigma^* ~|~ w\text{ ends with } abba\}$
-        \item $\{w \in \Sigma^* ~|~ \#b(w) \equiv 1,2 \pmod 4\}$
+        \item $\{w \in \Sigma^* ~|~ w\text{ has a single b in the 3rd place from the right}\}$
     \end{itemize}
-
-    \item Let $L$ be a language. define $L' = \{xay \in L~|~ xy \in \Sigma^*, a \in \Sigma\}$. We take the strings in $L$, and add a single symbol anywhere in the string, even possibly at the beginning or end. Prove that if $L$ is regular, then so is $L'$
+    
+    \item Let $L$ be a language. define $L' = \{xay \in \Sigma^*~|~ xy \in L, a \in \Sigma\}$. We take the strings in $L$, and add a single symbol anywhere in the string, even possibly at the beginning or end. Prove that if $L$ is regular, then so is $L'$.
 
     \item Prove that $\{a^nba^mb^{m+n} ~|~ m,n \in \mathbb{N}\}$ is not regular by usage of the pumping lemma.
-
+    
     \item Prove that a unary language is regular if and only if it is the finite union of languages whos lengths are arithmetic progressions, and a finite language.
 \end{enumerate}
 \end{document}
