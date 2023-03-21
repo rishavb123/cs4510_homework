@@ -1,0 +1,108 @@
+\documentclass[11pt]{article}
+\usepackage{enumitem}
+\usepackage{latexsym}
+\usepackage{amsfonts}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xcolor}
+\usepackage{mathrsfs}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{automata}
+
+\setlength{\textheight}{8.5in}
+\setlength{\textwidth}{6.0in}
+\setlength{\headheight}{0in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\oddsidemargin}{-.5in}
+
+\input{../lecture_notes/preamble.tex}
+
+\newcommand{\solution}[1]{\paragraph{Solution}  }
+\newcommand{\bl}[1]{\textcolor{blue}{#1}}
+\newcommand{\rd}[1]{\textcolor{red}{#1}}
+
+\begin{document}
+\hw{4: Interlude}{3/08/2023}{Rishav Bhagat}{Due:3/15/2023}
+
+You should submit a typeset or \emph{neatly} written pdf on Gradescope.  The grading TA should not have to struggle to read what you've written; if your handwriting is hard to decipher, you will be asked to typeset your future assignments. Five bonus points if you use \LaTeX, and our template. You may collaborate with other students, but any written work should be your own. \textbf{This homework tests your proof writing skills. Grading will be done on your ability to articulate and form a technical argument.}
+
+\begin{enumerate}
+    \item Recall that a function $f:\Sigma^* \rightarrow \Sigma^*$ is said to be computable\footnote{or Turing-computable} if for all $w \in \Sigma^*$ there exists a Turing machine which begins with $w$ on its tape and halts with $f(w)$ on its tape. Prove that the computable functions are closed under composition.
+
+    \solution{} To prove computable functions are closed under composition, we show that if $f:\Sigma^* \rightarrow \Sigma^*$ and $g:\Sigma^* \rightarrow \Sigma^*$ are computable functions, then $h:\Sigma^* \rightarrow \Sigma^*$ where $h = f \circ g$ is a computable function.
+
+    This can be proven by building a Turing Machine $M_h$ that computes $h$. Since $f$ and $g$ are both computable, there exists Turing Machines that compute then $M_f$ and $M_g$ respectively. The general idea to create $M_h$ is to just run $M_g$ on the input, reset the tape pointer back to the beginning, and then run $M_f$ on the resulting output of $M_g$. 
+
+    Resetting the tape pointer back to the beginning may not be trivial, so we can shift everything on the tape to the right by one and then add a marker in the beginning of the tape. Without diving into the state diagram for doing something like this, the pseudo-code would look like this:
+
+    \begin{verbatim}
+
+    1. Read and store current character into states while writing #
+       and move Right
+    2. Read and store current character into states while writing the 
+       previously stored character and move Right
+    3. Repeat the last step until you see a blank character (and override it)
+    
+    \end{verbatim}
+
+    After this loop back to the beginning of the input (by looping until you see a #) and then move to the right by one unit to be at the start of the original input.
+
+    Now, run $M_g$ except if there is ever a scenario in which you would move left to the #, instead move left and then back to the right (stay).
+
+    After $M_g$ is done, we loop back to the beginning of the input and then shift everything back to the left by one unit (overriding the #) with the following pseudo-code:
+
+    \begin{verbatim}
+
+    1. Loop to the end of the input
+    1. Read and store current character into states while writing _
+       and move Left
+    2. Read and store current character into states while writing the 
+       previously stored character and move Left
+    3. Repeat the last step until you see a # (and override it)
+    
+    \end{verbatim}
+
+    This should leave the tape pointer at the beginning of the input, so now we can just run $M_f$ to get our final output. Thus, these steps should create a turing machine $M_h$ that computes the composite of arbitrary computable functions $f$ and $g$, proving that computable functions are closed under composition.
+
+    Note that, with a 2-way tape, the shifting would not be required since we could just test for a $\_$ at the index -1. Then, since we showed that 2-way tape TMs can be converted into TMs, we could just use the converted TM as $M_h$.
+    
+
+    \item Prove the Entscheidungsproblem has no solution. Let $\mathscr{L}_D(TM)$ be the decidable languages and $\mathscr{L}_R(TM)$ be the recognizable languages. We know that $\mathscr{L}_D(TM) \subseteq \mathscr{L}_R(TM)$ by definition. Prove that there exists a language in $\mathscr{L}_R(TM) \setminus \mathscr{L}_D(TM)$ by diagonalization.
+
+    Hint: The proof idea is that you construct some language ``diagonally", show it cannot be equal to any language in $\mathscr{L}_D(TM)$, and by its construction, must be in $\mathscr{L}_R(TM)$.
+
+    \solution{} We prove that $\mathscr{L}_R(TM) \setminus \mathscr{L}_D(TM) \neq \emptyset$ by showing that there exists a language in $\mathscr{L}_R(TM)$, but not in $\mathscr{L}_D(TM)$. Consider, the language
+    $$ HALT = \{ (M, w) | M \text{ halts on w} \} $$
+    which is the language of all turing machine, input tuples that halt. 
+    
+    To show that $HALT \in \mathscr{L}_R(TM)$, we will create a recognizer for it. This recognizer $R$ will work as follows: simulate the input turing machine $M$ on input $w$ (using essentially the universal turing machine, which is a turing machine that can run input turing machines on a given input). Then if we get either accept or reject, $R$ outputs accept. In the case, $M$ halts, $R$ will accept and in the case $M$ loops on $w$, $R$ will loop, as required.
+
+    Now, for contradiction, assume that $HALT \in \mathscr{L}_D(TM)$. Since, $HALT$ is decidable, there must exist a turing machine $H$ that decides $HALT$.
+
+    Now, let's consider the following turing machine $D$ that takes in a turing machine $M$ as input:
+
+    \begin{verbatim}
+        1. Run the decider H on the input tuple (M, M), so the input turing 
+           machine M is both the turing machine input to H and the input 
+           string to H.
+        2. If H accepts, then loop forever (which is trivial to do), but if 
+           H rejects then return (either accept or reject)
+    \end{verbatim}
+
+    Note that $H$ must always halt since it is a decider.
+
+    Now, lets consider the following scenario $D(D)$. That is, we input $D$ into $D$. Let's consider the following cases:
+
+    \begin{enumerate}
+        \item $D(D)$ halts: The only way $D(D)$ halts, is if $H(D, D)$ rejects, which means that $D(D)$ must loop forever. So, $D(D)$ halting implies that $D(D)$ loops forever
+        \item $D(D)$ loops forever: The only way $D(D)$ loops, if if $H(D, D)$ accepts, which means that $D(D)$ must halt. So, $D(D)$ looping implies that $D(D)$ halts.
+    \end{enumerate}
+
+    Thus, we have a contradiction in both cases. Thus, $D$ cannot exist since it is not defined on the input $D$. Since we directly constructed $D$ from $H$, this means that the decider for $HALT$, $H$, cannot exist. 
+
+    Since a decider for $HALT$ cannot exist, it is not decidable, and $HALT \notin \mathscr{L}_D(TM)$. 
+    Since $HALT$ is recognizable but not decidable, $HALT \in \mathscr{L}_R(TM) \setminus \mathscr{L}_D(TM)$ as required.
+
+    This means that the Entscheidungsproblem has no solution since there cannot be an algorithm to create a decider for every language since some languages can not have a decider.
+    \end{enumerate}
+\end{document}
